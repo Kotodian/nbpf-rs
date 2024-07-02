@@ -2,6 +2,14 @@
 #![allow(non_snake_case)]
 #![allow(dead_code)]
 
+/// packet info
+mod packet_info;
+/// parser and matcher
+mod pm;
+use std::net::{IpAddr, Ipv6Addr};
+
+pub use pm::Tree;
+
 use libc::c_void;
 #[cfg(not(windows))]
 use libc::{c_char, c_int};
@@ -49,10 +57,27 @@ pub union nbpf_in6_addr {
     pub addr32: [u_int32_t; 4],
 }
 
+impl From<Ipv6Addr> for nbpf_in6_addr {
+    fn from(value: Ipv6Addr) -> Self {
+        Self {
+            addr8: value.octets(),
+        }
+    }
+}
+
 #[repr(C, packed)]
 pub union nbpf_ip_addr {
     pub v6: nbpf_in6_addr,
     pub v4: u_int32_t,
+}
+
+impl From<IpAddr> for nbpf_ip_addr {
+    fn from(value: IpAddr) -> Self {
+        match value {
+            IpAddr::V4(v4) => nbpf_ip_addr { v4: v4.into() },
+            IpAddr::V6(v6) => nbpf_ip_addr { v6: v6.into() },
+        }
+    }
 }
 
 // Header qualifiers
