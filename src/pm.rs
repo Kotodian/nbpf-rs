@@ -4,9 +4,13 @@ use crate::{
     nbpf_free, nbpf_match, nbpf_parse, nbpf_pkt_info_t, nbpf_tree_t, packet_info::PacketInfo,
 };
 
+#[derive(Debug)]
 pub struct Tree {
     ptr: *mut nbpf_tree_t,
 }
+
+unsafe impl Send for Tree {}
+unsafe impl Sync for Tree {}
 
 impl Tree {
     pub fn new(filter: &str) -> Self {
