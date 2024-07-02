@@ -4,11 +4,12 @@
 
 /// packet info
 mod packet_info;
+pub use packet_info::{IPversion, PacketInfo, PacketInfoBuilder};
 /// parser and matcher
 mod pm;
-use std::net::{IpAddr, Ipv6Addr};
-
 pub use pm::Tree;
+
+use std::net::{IpAddr, Ipv6Addr};
 
 use libc::c_void;
 #[cfg(not(windows))]
