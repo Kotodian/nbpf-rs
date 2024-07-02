@@ -4,7 +4,8 @@ version = "0.1.0"
 edition = "2021"
 description = "bpf filter syntax parser and matcher"
 authors = ["lqk <417350372@qq.com>"]
-license = "Apcache-2.0"
+categories = ["network-programing"]
+license = "Apache-2.0"
 keywords = ["bpf"]
 readme = "README.md"
 
