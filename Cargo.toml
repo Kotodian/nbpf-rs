@@ -2,6 +2,11 @@
 name = "nbpf-sys"
 version = "0.1.0"
 edition = "2021"
+description = "bpf filter syntax parser and matcher"
+authors = ["lqk <417350372@qq.com>"]
+license = "Apacahe-2.0"
+keywords = ["bpf"]
+readme = "README.md"
 
 [dependencies]
 libc = "0.2.155"
