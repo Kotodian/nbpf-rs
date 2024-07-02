@@ -282,25 +282,25 @@ mod test {
     #[test]
     pub fn test_nbpf_base() {
         unsafe {
-            let filter = "dst host 192.168.0.1";
+            let filter = "host 192.168.0.1";
             let filter = CString::new(filter).unwrap();
             let tree = nbpf_parse(filter.as_ptr() as *const c_char, None);
             let l4_src_port: u16 = 34;
             let l4_dst_port: u16 = 345;
 
             let pkt_info = nbpf_pkt_info_t {
-                device_id: 400,
-                interface_id: 45,
+                device_id: 0,
+                interface_id: 0,
                 dmac: [0x00, 0x00, 0x00, 0x00, 0x00, 0x00],
                 smac: [0x00, 0x00, 0x00, 0x00, 0x00, 0x00],
                 vlan_id: 0,
                 vlan_id_qinq: 0,
                 master_l7_proto: 0,
-                l7_proto: 0,
+                l7_proto: 7,
                 tuple: nbpf_pkt_info_tuple_t {
-                    eth_type: 0,
+                    eth_type: 0x0800,
                     ip_version: 4,
-                    l3_proto: 0,
+                    l3_proto: 17,
                     ip_tos: 0,
                     ip_src: nbpf_ip_addr { v4: 0x0100000A },
                     ip_dst: nbpf_ip_addr { v4: 0x0100A8C0 },
@@ -309,7 +309,57 @@ mod test {
                 },
                 tunneled_tuple: nbpf_pkt_info_tuple_t {
                     eth_type: 0,
+                    ip_version: 0,
+                    l3_proto: 0,
+                    ip_tos: 0,
+                    ip_src: nbpf_ip_addr { v4: 0 },
+                    ip_dst: nbpf_ip_addr { v4: 0 },
+                    l4_src_port: 0,
+                    l4_dst_port: 0,
+                },
+            };
+
+            let matched = nbpf_match(
+                tree as *const nbpf_tree_t,
+                &pkt_info as *const nbpf_pkt_info_t,
+            );
+
+            assert_eq!(matched, 1);
+            nbpf_free(tree);
+        }
+    }
+
+    #[test]
+    pub fn test_nbpf_complex() {
+        unsafe {
+            let filter = "(host 192.168.0.1 and port 3000) or (src host 10.0.0.1 and proto 17)";
+            let filter = CString::new(filter).unwrap();
+            let tree = nbpf_parse(filter.as_ptr() as *const c_char, None);
+            let l4_src_port: u16 = 3000;
+            let l4_dst_port: u16 = 345;
+
+            let pkt_info = nbpf_pkt_info_t {
+                device_id: 0,
+                interface_id: 0,
+                dmac: [0x00, 0x00, 0x00, 0x00, 0x00, 0x00],
+                smac: [0x00, 0x00, 0x00, 0x00, 0x00, 0x00],
+                vlan_id: 0,
+                vlan_id_qinq: 0,
+                master_l7_proto: 0,
+                l7_proto: 7,
+                tuple: nbpf_pkt_info_tuple_t {
+                    eth_type: 0x0800,
                     ip_version: 4,
+                    l3_proto: 17,
+                    ip_tos: 0,
+                    ip_src: nbpf_ip_addr { v4: 0x0100000A },
+                    ip_dst: nbpf_ip_addr { v4: 0x0100A8C0 },
+                    l4_src_port: l4_src_port.to_be(),
+                    l4_dst_port: l4_dst_port.to_be(),
+                },
+                tunneled_tuple: nbpf_pkt_info_tuple_t {
+                    eth_type: 0,
+                    ip_version: 0,
                     l3_proto: 0,
                     ip_tos: 0,
                     ip_src: nbpf_ip_addr { v4: 0 },
