@@ -282,7 +282,7 @@ mod test {
     #[test]
     pub fn test_nbpf_base() {
         unsafe {
-            let filter = "host 192.168.0.1";
+            let filter = "not host 192.168.0.1";
             let filter = CString::new(filter).unwrap();
             let tree = nbpf_parse(filter.as_ptr() as *const c_char, None);
             let l4_src_port: u16 = 34;
@@ -303,7 +303,7 @@ mod test {
                     l3_proto: 17,
                     ip_tos: 0,
                     ip_src: nbpf_ip_addr { v4: 0x0100000A },
-                    ip_dst: nbpf_ip_addr { v4: 0x0100A8C0 },
+                    ip_dst: nbpf_ip_addr { v4: 0x0100A8C1 },
                     l4_src_port: l4_src_port.to_be(),
                     l4_dst_port: l4_dst_port.to_be(),
                 },
