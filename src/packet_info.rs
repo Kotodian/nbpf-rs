@@ -151,8 +151,8 @@ impl PacketInfoBuilder {
                     .l3_ip_dst
                     .unwrap_or(IpAddr::V6(Ipv6Addr::new(0, 0, 0, 0, 0, 0, 0, 0)))
                     .into(),
-                l4_src_port: self.l4_src_port.unwrap_or_default(),
-                l4_dst_port: self.l4_dst_port.unwrap_or_default(),
+                l4_src_port: self.l4_src_port.unwrap_or_default().to_be(),
+                l4_dst_port: self.l4_dst_port.unwrap_or_default().to_be(),
             },
             tunneled_tuple: nbpf_pkt_info_tuple_t {
                 eth_type: self.tunnel_eth_type.unwrap_or_default(),
@@ -167,8 +167,8 @@ impl PacketInfoBuilder {
                     .tunnel_ip_dst
                     .unwrap_or(IpAddr::V6(Ipv6Addr::new(0, 0, 0, 0, 0, 0, 0, 0)))
                     .into(),
-                l4_src_port: self.tunnel_l4_src_port.unwrap_or_default(),
-                l4_dst_port: self.tunnel_l4_dst_port.unwrap_or_default(),
+                l4_src_port: self.tunnel_l4_src_port.unwrap_or_default().to_be(),
+                l4_dst_port: self.tunnel_l4_dst_port.unwrap_or_default().to_be(),
             },
             master_l7_proto: self.master_l7_proto.unwrap_or_default(),
             l7_proto: self.l7_proto.unwrap_or_default(),
