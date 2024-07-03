@@ -75,8 +75,20 @@ pub union nbpf_ip_addr {
 impl From<IpAddr> for nbpf_ip_addr {
     fn from(value: IpAddr) -> Self {
         match value {
-            IpAddr::V4(v4) => nbpf_ip_addr { v4: v4.into() },
-            IpAddr::V6(v6) => nbpf_ip_addr { v6: v6.into() },
+            IpAddr::V4(v4) => {
+                let mut v4 = v4.octets();
+                v4.reverse();
+                nbpf_ip_addr {
+                    v4: u32::from_le_bytes(v4),
+                }
+            }
+            IpAddr::V6(v6) => {
+                let mut v6 = v6.octets();
+                v6.reverse();
+                nbpf_ip_addr {
+                    v6: nbpf_in6_addr { addr8: v6 },
+                }
+            }
         }
     }
 }
