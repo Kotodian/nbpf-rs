@@ -1,6 +1,6 @@
 [package]
 name = "nbpf-sys"
-version = "0.1.3"
+version = "0.1.4"
 edition = "2021"
 description = "bpf filter syntax parser and matcher"
 authors = ["lqk <417350372@qq.com>"]
