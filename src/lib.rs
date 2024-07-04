@@ -77,14 +77,12 @@ impl From<IpAddr> for nbpf_ip_addr {
         match value {
             IpAddr::V4(v4) => {
                 let mut v4 = v4.octets();
-                v4.reverse();
                 nbpf_ip_addr {
                     v4: u32::from_le_bytes(v4),
                 }
             }
             IpAddr::V6(v6) => {
                 let mut v6 = v6.octets();
-                v6.reverse();
                 nbpf_ip_addr {
                     v6: nbpf_in6_addr { addr8: v6 },
                 }
